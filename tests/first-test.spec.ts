@@ -30,6 +30,26 @@ test('user facing locators', async ({page})=>{
     await page.getByLabel('Email').first().fill("Hello@gmail.com")
     await page.getByPlaceholder('Jane Doe').fill('saurav Ranjan Purohit')
 
+    await page.locator('nb-card', {hasText: 'Horizontal form'}).getByRole('button').click();
+    await page.locator('nb-card', {hasText: 'Horizontal form'}).getByRole('textbox').first().fill('aayanshpurohit@gmail.com');
+
+
+
+})
+
+
+test('locating child element', async ({page})=>{
+
+    await page.getByText('Forms').click()
+    await page.getByText('Form Layouts').click()
+    // child element way 1
+    await page.locator('nb-card').locator('nb-radio-group').locator(':text-is("Option 1")').click();
+
+    // child element way 2
+    await page.locator('nb-card nb-radio-group :text-is("Option 2")').click();
+
+    // way 3
+    await page.locator('nb-card').getByRole('button', {name:'Sign In'}).first().click();
 })
 
 
