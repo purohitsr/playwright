@@ -50,6 +50,9 @@ test('locating child element', async ({page})=>{
 
     // way 3
     await page.locator('nb-card').getByRole('button', {name:'Sign In'}).first().click();
+   
+     // way 4
+
 })
 
 
