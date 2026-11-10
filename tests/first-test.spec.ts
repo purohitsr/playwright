@@ -53,6 +53,7 @@ test('locating child element', async ({page})=>{
    
      // way 4
 
+     await page.locator('nb-card').nth(3).getByRole('button').click();
 })
 
 
