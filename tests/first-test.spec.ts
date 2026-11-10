@@ -55,4 +55,9 @@ test('locating child element', async ({page})=>{
 
 })
 
+test('locating parent element', async ({page})=>{
+
+    await page.locator('nb-card', {hasText: 'Using the Grid'}).getByRole('button').click();
+})
+
 
