@@ -1,4 +1,4 @@
-import { test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test.beforeEach(async ({page})=>{
 
@@ -53,11 +53,83 @@ test('locating child element', async ({page})=>{
    
      // way 4
 
+     await page.locator('nb-card').nth(3).getByRole('button').click();
 })
 
 test('locating parent element', async ({page})=>{
+    await page.getByText('Forms').click()
+    await page.getByText('Form Layouts').click()
 
     await page.locator('nb-card', {hasText: 'Using the Grid'}).getByRole('button').click();
+    await page.locator('nb-card', {has: page.locator('#inputEmail1')}).getByRole('button').click();
+    await page.locator('nb-card', {has: page.locator('#inputEmail1')}).getByRole('textbox').first().fill('Hello');
+    await page.locator('nb-card').filter({hasText: 'Using the grid'}).getByRole('button').click();
+
+    // multiple filter
+
+    await page.locator('nb-card')
+    .filter({has: page.locator('nb-checkbox')})
+    .filter({hasText: 'Sign in'})
+    .getByLabel('Email')
+    .fill("srpsilicon@gmail.com");
+
+
+    // traversing parent
+    await page.locator('Using the Grid').locator('..').getByRole('button').click();
 })
 
+test('reusing the locators', async ({page})=>{
+
+    const basicFormSection = page.locator('nb-card', {hasText: 'Basic form'});
+    await basicFormSection.getByLabel('Password').fill('playwright');
+
+
+})
+
+test('extracting text from ', async ({page})=>{
+     await page.getByText('Forms').click()
+    await page.getByText('Form Layouts').click()
+    const basicFormSection = page.locator('nb-card', {hasText: 'Basic form'});
+    const submitButtonText = await basicFormSection.getByRole('button').textContent();
+    expect(submitButtonText).toEqual('Submit');
+
+    // extract multiple text values
+
+    const allRadioButtonValues  = await page.locator('nb-radio').allTextContents();
+    console.log(allRadioButtonValues);
+    expect(allRadioButtonValues).toContain('Option 1');
+
+    // extracting input fields value
+
+    const emailField =  basicFormSection.getByRole('textbox', {name: 'Email'})
+    await emailField.fill('srpsilsicon@gmail.com');
+    const emailFieldValue = emailField.inputValue();
+    console.log(emailFieldValue);
+
+})
+
+
+test('Assertions', async ({page})=>{
+
+    await page.getByText('Forms').click();
+    await page.getByText('Form Layouts').click();
+
+    const usingtheGridSectionButton = page.locator('nb-card',{hasText:'Using the Grid'}).getByRole('button')
+   
+    // generic asserion
+    const value = 5;
+    expect(value).toEqual(5);
+
+    const submitButtonText = await usingtheGridSectionButton.textContent();
+    expect(submitButtonText).toEqual('Sign in');
+
+    // Locator Asserion
+
+    await expect(usingtheGridSectionButton).toHaveText('Sign in');
+
+    // soft Assertion
+    await expect.soft(usingtheGridSectionButton).toHaveText('Sign in');
+
+
+})
 
